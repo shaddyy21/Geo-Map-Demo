@@ -39,12 +39,15 @@ window.onload = function(){
     
     
     if(geo_position_js.init()){
+        
        geo_position_js.getCurrentPosition(
-        function(position);
+        function(position){
            console.log(position);
         
         var myPlaceLatLng = {lat: position.coords.latitude, lng:position.coords.longitude};
-        var directionsDisplay = new google.maps.DirectionsRender({map: map});
+        var directionsDisplay = new google.maps.DirectionsRenderer({
+            map: map
+        });
         
         var request = {
             destination: myPlaceLatLng,
@@ -53,32 +56,32 @@ window.onload = function(){
         };
         
         var directionsService = new google.maps.DirectionsService();
-            directionsService.route(request, function(response, status){
+            directionsService.route(request, function(response, status) {
+                
                 if (status == google.maps.DirectionsStatus.OK) {
                     // Display the route on the map.
                     directionsDisplay.setDirections(response);
                 }
             });
         
+        var newInfowindow = new google.maps.InfoWindow({
+        content: '<div id="conent">You&apos;re here</div>'
+      });
+        
+        var newMarker = new google.maps.Marker({
+            position: myPlaceLatLng,
+        });
+        
+        newMarker.addListener('click', function() {
+            newInfowindow.open(map, newMarker);
+        });
+        },
+        function(error){
+           console.log(error);
+        });
+        
+    }else{
+        console.log("Functionality not available");
     }
-    var newContentString = '<div id="content">'+
-      '<div id="siteNotice">'+
-      '</div>'+
-      '<h1 id="firstHeading" class="firstHeading">You&apos;re Here</h1>'+
-      '</div>';
-    
-   
-    
-    var newInfowindow = new google.maps.InfoWindow({
-    content: newContentString
-  });
-    
-    var newMarker = new google.maps.Marker({
-        map: map,
-        position: myPlaceLatLng,
-        title: 'You&apos;re Here'
-    });
-    
-    newMarker.addListener('click', function() {
-    newInfowindow.open(map, newMarker);
-  });
+
+  }
