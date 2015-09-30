@@ -53,6 +53,12 @@ window.onload = function(){
         };
         
         var directionsService = new google.maps.DirectionsService();
+            directionsService.route(request, function(response, status){
+                if (status == google.maps.DirectionsStatus.OK) {
+                    // Display the route on the map.
+                    directionsDisplay.setDirections(response);
+                }
+            });
         
     }
     var newContentString = '<div id="content">'+
